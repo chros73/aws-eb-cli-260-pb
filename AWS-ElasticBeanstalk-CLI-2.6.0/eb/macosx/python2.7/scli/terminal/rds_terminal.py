@@ -52,15 +52,19 @@ class RdsTerminal(TerminalBase):
         
         if parameter_pool.has(PName.RdsEnabled):
             ori_rds_creation = parameter_pool.get_value(PName.RdsEnabled, False)
-            msg = AskMsg[PName.RdsEnabled].format(TerminalMessage.CurrentValue.\
-                                                  format(misc.bool_to_yesno(ori_rds_creation)))
-            raw_answer = cls.line_input(msg, True)
+            #msg = AskMsg[PName.RdsEnabled].format(TerminalMessage.CurrentValue.\
+            #                                      format(misc.bool_to_yesno(ori_rds_creation)))
+            #raw_answer = cls.line_input(msg, True)
+            raw_answer = 'n' # we define here a NO for default, use a 'y' if you want to enable RDS
             if raw_answer is None:
                 rds_creation = ori_rds_creation
             else:
+                print "RDS enabled: %s" % raw_answer
                 rds_creation = misc.string_to_boolean(raw_answer)
         else:
-            raw_answer = cls.line_input(AskMsg[PName.RdsEnabled].format(u''))
+            #raw_answer = cls.line_input(AskMsg[PName.RdsEnabled].format(u''))
+            raw_answer = 'n' # we define here a NO for default, use a 'y' if you want to enable RDS
+            print "RDS enabled: %s" % raw_answer
             rds_creation = misc.string_to_boolean(raw_answer)
 
         parameter_pool.put(Parameter(PName.RdsEnabled, rds_creation, PSource.Terminal), 

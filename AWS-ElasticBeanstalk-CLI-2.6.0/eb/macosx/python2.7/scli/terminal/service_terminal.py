@@ -33,19 +33,36 @@ class ServiceTerminal(TerminalBase):
 
     @classmethod
     def ask_aws_access_key_id(cls, parameter_pool):
-        print(TerminalMessage.AWSKeyLocateHelp)
-        msg_value = parameter_pool.get_value(ParameterName.AwsAccessKeyId)
-        cls.ask_parameter(parameter_pool, 
-                           ParameterName.AwsAccessKeyId,
-                           misc.mask_string(msg_value))
+        #print(TerminalMessage.AWSKeyLocateHelp)
+        if not parameter_pool.has(ParameterName.AwsAccessKeyId):
+            print(TerminalMessage.AWSKeyLocateHelp)
+            msg_value = parameter_pool.get_value(ParameterName.AwsAccessKeyId)
+            cls.ask_parameter(parameter_pool,
+                              ParameterName.AwsAccessKeyId,
+                              misc.mask_string(msg_value))
+        else:
+            msg_value = parameter_pool.get_value(ParameterName.AwsAccessKeyId)
+            print "AWS Access Key ID: *******************"
+            #cls.ask_parameter(parameter_pool,
+            #               ParameterName.AwsAccessKeyId,
+            #               misc.mask_string(msg_value))
+            return msg_value
     
 
     @classmethod
     def ask_aws_secret_access_key(cls, parameter_pool):
-        msg_value = parameter_pool.get_value(ParameterName.AwsSecretAccessKey)
-        cls.ask_parameter(parameter_pool, 
+        if not parameter_pool.has(ParameterName.AwsSecretAccessKey):
+            msg_value = parameter_pool.get_value(ParameterName.AwsSecretAccessKey)
+            cls.ask_parameter(parameter_pool,
                            ParameterName.AwsSecretAccessKey,
                            misc.mask_string(msg_value))
+        else:
+            msg_value = parameter_pool.get_value(ParameterName.AwsSecretAccessKey)
+            print "AWS Secret Access Key: *******************"
+            #cls.ask_parameter(parameter_pool,
+            #                  ParameterName.AwsSecretAccessKey,
+            #                  misc.mask_string(msg_value))
+            return msg_value
         
 
     @classmethod
