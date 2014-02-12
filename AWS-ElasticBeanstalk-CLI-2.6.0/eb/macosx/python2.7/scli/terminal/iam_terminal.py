@@ -53,8 +53,11 @@ class IamTerminal(TerminalBase):
                 profile_list.append(sorted_profiles[i].name)
             profile_list.append(IamTerminalMessage.OtherProfile)
     
-            profile_index = cls.single_choice(choice_list = profile_list,
-                                              can_return_none = True)
+            #profile_index = cls.single_choice(choice_list = profile_list,
+            #                                  can_return_none = True)
+            profile_index = 1 # I define here to use an IAM profile that I already configured using AWS console - IAM section
+            val = profile_index + 1
+            print "Using profile aws-elasticbeanstalk-ec2-role %d" % val
     
             if profile_index == 0:
                 # Create profile instance from scratch

@@ -39,7 +39,10 @@ class BeanstalkTerminal(TerminalBase):
                                ParameterName.ApplicationName,
                                autogen_value = app_name)
         else:
-            cls.ask_parameter(parameter_pool, ParameterName.ApplicationName)            
+            #cls.ask_parameter(parameter_pool, ParameterName.ApplicationName)
+            msg_value = parameter_pool.get_value(ParameterName.ApplicationName, False)
+            print "App name is %s \n" % msg_value
+            return msg_value
         
 
     @classmethod
@@ -54,7 +57,10 @@ class BeanstalkTerminal(TerminalBase):
                                autogen_value = env_name)
         else:
             old_env_name = parameter_pool.get_value(ParameterName.EnvironmentName, False)
-            cls.ask_parameter(parameter_pool, ParameterName.EnvironmentName)            
+            #cls.ask_parameter(parameter_pool, ParameterName.EnvironmentName)
+            print "Env Name is %s \n" % old_env_name
+            return old_env_name
+
     
         # Post processing
         new_env_name = parameter_pool.get_value(ParameterName.EnvironmentName, False)
@@ -182,18 +188,24 @@ class BeanstalkTerminal(TerminalBase):
                       .format(current_branch))
         
         previous_env_name = parameter_pool.get_value(ParameterName.EnvironmentName)
-        cls.ask_branch_environment_name(parameter_pool)
+        print "The env name is %s \n" % previous_env_name
+        #cls.ask_branch_environment_name(parameter_pool)
         
         # Ask whether copy from default 
         def_env_name = parameter_pool.get_value(ParameterName.DefaultEnvironmentName, False)
-        if previous_env_name is None:
-            if cls.ask_confirmation(TerminalMessage.CopyDefaultToBranch.format(def_env_name)):
-                return True #Copy from default
-        
-        # Ask for branch environment settings
-        cls.ask_environment_type(parameter_pool)
-        RdsTerminal.ask_rds_creation(parameter_pool)
-        IamTerminal.ask_profile_creation(parameter_pool)
+        print "The Default env name is %s \n" % def_env_name
+        #Added for eb branch automation
+        param = Parameter("EnvironmentName", def_env_name, "Terminal")
+        parameter_pool.put(param, True)
+
+        #if previous_env_name is None:
+        #    if cls.ask_confirmation(TerminalMessage.CopyDefaultToBranch.format(def_env_name)):
+        #        return True #Copy from default
+        #
+        ## Ask for branch environment settings
+        #cls.ask_environment_type(parameter_pool)
+        #RdsTerminal.ask_rds_creation(parameter_pool)
+        #IamTerminal.ask_profile_creation(parameter_pool)
         
         return False # Use user input
     
@@ -222,11 +234,13 @@ class BeanstalkTerminal(TerminalBase):
                   format(append_message))
             
             availableTypes = optionDef.value_options
-            type_index = cls.single_choice(choice_list = availableTypes, 
-                                       title = TerminalMessage.AvailableEnvironmentType, 
-                                       message = None, 
-                                       can_return_none = original_value is not None)
+            #type_index = cls.single_choice(choice_list = availableTypes,
+            #                           title = TerminalMessage.AvailableEnvironmentType,
+            #                           message = None,
+            #                           can_return_none = original_value is not None)
+            type_index=1
             value = availableTypes[type_index] if type_index is not None else original_value
+            print "Environment Type: %s" % value
             envtype = Parameter(ParameterName.EnvironmentType, value, ParameterSource.Terminal)
             parameter_pool.put(envtype, True)
         else:
